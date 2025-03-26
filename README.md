@@ -75,23 +75,134 @@ Then, open [http://localhost:8000](http://localhost:8000) in your browser.
 Tasks are posted via:
 
 ```javascript
-function postToFacebook(task, pageAccessToken) {
-  let message = `✅ Task Completed: ${task.title}\n📌 Details: ${task.description}\n📅 Due Date: ${task.due_date}`;
+$(document).on("click", ".postToFacebook", function () {
+  let taskId = $(this).data("id");
 
-  $.ajax({
-    url: `https://graph.facebook.com/<?= FB_GRAPH_VERSION ?>/<?= FB_PAGE_ID ?>/feed`,
-    type: "POST",
-    data: {
-      message: message,
-      access_token: pageAccessToken,
-    },
-    success: function (response) {
-      alert("Task successfully posted on Facebook Page!");
-    },
-    error: function (error) {
-      console.log(error);
-    },
+  getTaskById(taskId)
+    .then((task) => {
+      console.log(task);
+      postToFacebook(task);
+    })
+    .catch((error) => {
+      console.error(error); // Handle error
+    });
+});
+
+// Fetch Task by ID
+function getTaskById(taskId) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: `api/tasks.php?id=${taskId}`, // Fetch task by ID
+      method: "GET",
+      dataType: "json",
+      success: function (response) {
+        if (response.task) {
+          resolve(response.task); // Resolve with the task data
+        } else {
+          reject("Task not found");
+        }
+      },
+      error: function (xhr, status, error) {
+        reject("Error fetching task: " + error);
+      },
+    });
   });
+}
+
+function shareToFacebook(task) {
+  FB.ui(
+    {
+      method: "share",
+      href: "<?= SITE_URL ?>/api/task.php?id=" + task.id, // Replace with your task URL
+      quote: `Task Completed: ${task.title}\n Details: ${task.description}\n Due Date: ${task.due_date}`,
+    },
+    function (response) {
+      if (response && !response.error_message) {
+        alert("Task successfully shared on Facebook!");
+      } else {
+        alert("Failed to share task.");
+      }
+    }
+  );
+}
+
+function postToFacebook(task, pageAccessToken) {
+  let message = `Task Completed: ${task.title}\n Details: ${task.description}\n Due Date: ${task.due_date}`;
+  loginToFacebook(function (pageAccessToken) {
+    $.ajax({
+      url: `https://graph.facebook.com/<?= FB_GRAPH_VERSION ?>/<?= FB_PAGE_ID ?>/feed`,
+      type: "POST",
+      data: {
+        message: message,
+        access_token: pageAccessToken,
+      },
+      success: function (response) {
+        alert("Task successfully posted on Facebook Page!");
+        console.log(response);
+      },
+      error: function (error) {
+        alert("Failed to post task.");
+        console.log(error);
+      },
+    });
+  });
+}
+
+// function postToFacebook(task) {
+//     loginToFacebook(function(pageAccessToken) {
+//         FB.api('/me/feed', 'POST', {
+//             message: `Task Completed: ${task.title}\n Details: ${task.description}\n Due Date: ${task.due_date}`,
+//             access_token: pageAccessToken // Use Page Access Token
+//         }, function(response) {
+//             if (response && !response.error) {
+//                 alert("Task successfully posted to Facebook Page!");
+//             } else {
+//                 console.error("Error posting:", response.error);
+//                 alert("Failed to post task.");
+//             }
+//         });
+//     });
+// }
+
+function loginToFacebook(callback) {
+  FB.getLoginStatus(function (response) {
+    if (response.status === "connected") {
+      console.log("Logged in!");
+      getPageAccessToken(response.authResponse.accessToken, callback);
+    } else {
+      FB.login(
+        function (response) {
+          if (response.authResponse) {
+            console.log("Login successful!");
+            getPageAccessToken(response.authResponse.accessToken, callback);
+          } else {
+            console.log("User canceled login.");
+          }
+        },
+        {
+          scope: "pages_manage_posts,pages_read_engagement",
+        }
+      );
+    }
+  });
+}
+
+function getPageAccessToken(userAccessToken, callback) {
+  FB.api(
+    "/me/accounts",
+    "GET",
+    {
+      access_token: userAccessToken,
+    },
+    function (response) {
+      if (response.data && response.data.length > 0) {
+        let pageAccessToken = response.data[0].access_token; // First page access token
+        callback(pageAccessToken);
+      } else {
+        alert("No pages found. Make sure you are an admin.");
+      }
+    }
+  );
 }
 ```
 
