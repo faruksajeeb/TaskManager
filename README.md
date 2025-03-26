@@ -148,22 +148,6 @@ function postToFacebook(task, pageAccessToken) {
   });
 }
 
-// function postToFacebook(task) {
-//     loginToFacebook(function(pageAccessToken) {
-//         FB.api('/me/feed', 'POST', {
-//             message: `Task Completed: ${task.title}\n Details: ${task.description}\n Due Date: ${task.due_date}`,
-//             access_token: pageAccessToken // Use Page Access Token
-//         }, function(response) {
-//             if (response && !response.error) {
-//                 alert("Task successfully posted to Facebook Page!");
-//             } else {
-//                 console.error("Error posting:", response.error);
-//                 alert("Failed to post task.");
-//             }
-//         });
-//     });
-// }
-
 function loginToFacebook(callback) {
   FB.getLoginStatus(function (response) {
     if (response.status === "connected") {
