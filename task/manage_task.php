@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/../config/facebook.php';
+?>
 <h2 class="mb-4">Manage Task</h2>
 <hr>
 <div class="row">
@@ -26,10 +29,10 @@
 // Initialize the Facebook SDK
 window.fbAsyncInit = function() {
     FB.init({
-        appId: '1023003866387653',
+        appId: "<?= FB_APP_ID ?>",
         cookie: true,
         xfbml: true,
-        version: 'v22.0' // Specify the Facebook Graph API version
+        version: "<?= FB_GRAPH_VERSION ?>" // Specify the Facebook Graph API version
     });
 
     // Check if the user is logged into Facebook
@@ -59,6 +62,7 @@ $(function() {
     $(".datepicker").datepicker({
         dateFormat: 'yy-mm-dd'
     });
+
     loadTasks(); // Load tasks on page load
 
     // Fetch tasks from API
@@ -277,7 +281,7 @@ $(function() {
     function shareToFacebook(task) {
         FB.ui({
             method: 'share',
-            href: 'https://task-manager.test/api/task.php?id=' + task
+            href: '<?= SITE_URL ?>/api/task.php?id=' + task
                 .id, // Replace with your task URL
             quote: `Task Completed: ${task.title}\n Details: ${task.description}\n Due Date: ${task.due_date}`
         }, function(response) {
@@ -294,7 +298,7 @@ $(function() {
             `Task Completed: ${task.title}\n Details: ${task.description}\n Due Date: ${task.due_date}`;
         loginToFacebook(function(pageAccessToken) {
             $.ajax({
-                url: `https://graph.facebook.com/v18.0/105688734589812/feed`,
+                url: `https://graph.facebook.com/<?= FB_GRAPH_VERSION ?>/<?= FB_PAGE_ID ?>/feed`,
                 type: 'POST',
                 data: {
                     message: message,
