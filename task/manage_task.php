@@ -195,7 +195,7 @@ $(function() {
 
         $.ajax({
             url: "api/tasks.php",
-            type: "STATUS_COMPLETE",
+            type: "PUT",
             contentType: "application/json",
             data: JSON.stringify({
                 id: taskId,

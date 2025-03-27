@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 header("Content-Type: application/json");
 require_once "../config/database.php";
@@ -70,6 +70,11 @@ switch ($method) {
 
             // Return a success message
             echo json_encode(["message" => "Task updated successfully"]);
+        } elseif (isset($data['id'], $data['status']) && $data['status'] == 1) {
+            // Mark task as completed
+            $stmt = $conn->prepare("UPDATE tasks SET status = 1 WHERE id = ? AND user_id = ?");
+            $stmt->execute([$data['id'], $user_id]);
+            echo json_encode(["message" => "Task marked as completed"]);
         } else {
             // Handle missing fields
             echo json_encode(["error" => "Missing data"]);
@@ -83,15 +88,6 @@ switch ($method) {
             echo json_encode(["message" => "Task deleted successfully"]);
         }
         break;
-    case 'STATUS_COMPLETE':  // Mark task as completed
-        $data = json_decode(file_get_contents("php://input"), true);
-        if (isset($data['id'])) {
-            $stmt = $conn->prepare("UPDATE tasks SET status = 1 WHERE id = ? AND user_id = ?");
-            $stmt->execute([$data['id'], $user_id]);
-            echo json_encode(["message" => "Task marked as completed"]);
-        }
-        break;
-
     default:
         echo json_encode(["error" => "Invalid request"]);
 }

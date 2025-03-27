@@ -26,6 +26,44 @@ CREATE TABLE `tasks` (
     `status` tinyint(1) DEFAULT '0'
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8;
 
+--
+-- Dumping data for table `tasks`
+--
+INSERT INTO
+    `tasks` (
+        `id`,
+        `user_id`,
+        `title`,
+        `description`,
+        `due_date`,
+        `status`
+    )
+VALUES
+    (
+        1,
+        1,
+        'Task One',
+        'Task One Description',
+        '2025-03-17',
+        0
+    ),
+    (
+        2,
+        1,
+        'Task Two',
+        'Task Two Description',
+        '2025-03-26',
+        0
+    ),
+    (
+        3,
+        1,
+        'Task Three',
+        'Task Three Description',
+        '2025-03-25',
+        0
+    );
+
 -- --------------------------------------------------------
 --
 -- Table structure for table `users`
