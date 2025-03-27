@@ -1236,3 +1236,70 @@ require_once __DIR__ . '/../config/facebook.php';
   </form>
 </div>
 ```
+
+### 🔹 Manage task HTML File (`assets/style.css`)
+
+```css
+.login-form {
+  border: 1px solid #e9e9e9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  padding: 20px; /* Optional: Add padding inside the box */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  background-color: white; /* optional, added white background to make shadow more visible */
+}
+.password-toggle {
+  cursor: pointer;
+}
+
+body {
+  display: flex;
+  background-color: #f4f7f9;
+  /* Light background for the whole page */
+}
+
+#sidebar {
+  width: 250px;
+  background: linear-gradient(135deg, #343a40, #212529);
+  /* Dark gradient sidebar */
+  height: 100vh;
+  padding-top: 20px;
+  color: white;
+  /* White text for sidebar items */
+}
+
+#sidebar .nav-link {
+  color: white;
+  padding: 12px 20px;
+  border-left: 3px solid transparent;
+  /* Highlight indicator */
+}
+
+#sidebar .nav-link:hover,
+#sidebar .nav-link.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  /* Subtle hover effect */
+  border-left-color: #007bff;
+  /* Highlight color */
+}
+
+#sidebar .nav-link i {
+  margin-right: 10px;
+}
+
+#content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.navbar {
+  background-color: white;
+  /* White navbar */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for navbar */
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+```
